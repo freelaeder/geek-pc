@@ -1,12 +1,26 @@
-const initialState = {
-    // 用于保存用户登录凭据
-    credentials: {},
+// src/store/reducers/userReducer.ts
+
+interface Credentials {
+    token: string,
+    refresh_token: string
 }
 
-export default function userReducers(state = initialState,action:any){
+interface UserState {
+    credentials: Credentials
+}
 
-    switch (action.type){
+const initialState: UserState = {
+    // 用于保存用户登录凭据
+    credentials: {
+        token: '',
+        refresh_token: ''
+
+    },
+};
+
+export default function userReducer(state = initialState, action: any) {
+    switch (action.type) {
         default:
-            return state
+            return state;
     }
 }
