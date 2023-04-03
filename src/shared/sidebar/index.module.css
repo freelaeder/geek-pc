@@ -1,0 +1,4 @@
+/* src/shared/sidebar/index.module.css */
+.menu-list a:not(:global(.is-active)):hover {
+    background-color: transparent;
+}

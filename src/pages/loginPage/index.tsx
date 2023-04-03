@@ -3,6 +3,15 @@ import React, {FormEvent} from "react";
 import styles from './index.module.css'
 import {z, ZodError} from "zod";
 import logo from '@image/logo.png'
+import {loginRequest} from "@requests/auth";
+import {toast} from "react-toastify";
+import {AxiosError} from "axios";
+import {UserActions} from "@actions/userActions";
+import {Credentials} from "auth";
+import {connect, MapDispatchToPropsParam} from "react-redux";
+import {AppDispatch} from "@src/store";
+import {UserCreators} from "@store/creators/userCreators";
+import {RouteComponentProps} from "react-router-dom";
 
 interface FormState {
     mobile: string;
@@ -10,9 +19,6 @@ interface FormState {
     agree: boolean
 }
 
-interface Props {
-
-}
 
 interface FormErrors {
     agree?: string[];
@@ -25,7 +31,24 @@ interface Status {
     formError: FormErrors
 }
 
-export default class LoginPage extends React.Component<Props, Status> {
+// 用于发送actions指令的方法
+interface DispatchProps {
+    saveCredentials(credentials: Credentials): UserActions.SaveCredentials;
+}
+
+//组件状态的props
+interface OwnProps {
+}
+
+// 从redux中映射的state
+interface StateProps {
+
+}
+
+// 组件 Props 对象的类型
+type Props = OwnProps & StateProps & DispatchProps & RouteComponentProps;
+
+class LoginPage extends React.Component<Props, Status> {
 
     constructor(props: Props) {
         super(props)
@@ -59,6 +82,7 @@ export default class LoginPage extends React.Component<Props, Status> {
     updateFormData: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         const {name, value, checked} = event.target
         this.setState({
+            ...this.state,
             form: {
                 ...this.state.form,
                 [name]: name === 'agree' ? checked : value
@@ -68,7 +92,7 @@ export default class LoginPage extends React.Component<Props, Status> {
     }
 
     // 表单提交
-    submitFormData = (event: FormEvent<HTMLFormElement>) => {
+    submitFormData = async (event: FormEvent<HTMLFormElement>) => {
         // 阻止表单提交默认跳转的行为
         event.preventDefault()
         // 验证表单
@@ -80,6 +104,21 @@ export default class LoginPage extends React.Component<Props, Status> {
             this.setState({
                 formError: {...result.error.formErrors.fieldErrors as FormErrors}
             })
+            return
+        }
+        // 发送请求
+        try {
+            const res = await loginRequest({mobile: this.state.form.mobile, code: this.state.form.code})
+            // 登录成功提示
+            toast.success("登录成功");
+            // 保存redux
+            this.props.saveCredentials(res.data)
+            // 跳转到首页
+            this.props.history.push("/admin/dashboard");
+        } catch (e) {
+            if (e instanceof AxiosError) {
+                toast.error(e.response?.data.message);
+            }
         }
     }
 
@@ -171,3 +210,9 @@ export default class LoginPage extends React.Component<Props, Status> {
         </div>;
     }
 }
+
+const mapDispatchProps: MapDispatchToPropsParam<DispatchProps, OwnProps> = (dispatch: AppDispatch) => ({
+    saveCredentials: (credentials: Credentials) => dispatch(UserCreators.saveUserInfoCreator(credentials))
+})
+
+export default connect(undefined, mapDispatchProps)(LoginPage)

@@ -3,7 +3,6 @@ import {applyMiddleware, createStore} from "redux";
 import {composeWithDevTools} from "@redux-devtools/extension";
 import rootReducer from "@reducers/rootReducer";
 import thunk, {ThunkDispatch} from "redux-thunk";
-import {RequestManager} from "@utils/requestManager";
 
 const middlewares = [thunk];
 
@@ -23,7 +22,7 @@ const store = createStore(rootReducer, enhancers);
 
 export default store;
 
-const r1 = RequestManager.instance
-const r2 = RequestManager.instance
+// const r1 = RequestManager.instance
+// const r2 = RequestManager.instance
 // const r3 = new RequestManager()
 // console.log(r1 === r2)

@@ -8,6 +8,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import './assets/css/base.css'
 
 // http://toutiao.itheima.net/api-pc.html
+// pc http://geek-pc.itheima.net/login
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
