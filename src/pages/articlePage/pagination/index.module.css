@@ -1,0 +1,6 @@
+/* src/pages/articlePage/pagination/index.module.css */
+.pagination :global(.pagination-list) {
+    width: 100%;
+    justify-content: center;
+    padding: 20px 0;
+}

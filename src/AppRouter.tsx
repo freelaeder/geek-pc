@@ -7,6 +7,7 @@ import Layout from "@shared/layout";
 import DashboardPage from "@pages/dashboardPage";
 import RouteGuard from "@shared/routeGuard";
 import {isLogin} from "@utils/isLogin";
+import ArticlePage from "@pages/articlePage";
 
 export const history = createBrowserHistory();
 
@@ -24,10 +25,10 @@ export default class AppRouter extends React.Component {
                                 <Switch>
                                     <Redirect from="/admin" to="/admin/dashboard" exact/>
                                     <Route path="/admin/dashboard" component={DashboardPage}/>
+                                    <Route path="/admin/article" component={ArticlePage}/>
                                 </Switch>
                             </Layout>
                         </RouteGuard>
-
                     </Route>
                 </Switch>
             </Router>
