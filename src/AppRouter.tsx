@@ -5,6 +5,8 @@ import LoginPage from "@pages/loginPage";
 import {createBrowserHistory} from "history";
 import Layout from "@shared/layout";
 import DashboardPage from "@pages/dashboardPage";
+import RouteGuard from "@shared/routeGuard";
+import {isLogin} from "@utils/isLogin";
 
 export const history = createBrowserHistory();
 
@@ -17,12 +19,15 @@ export default class AppRouter extends React.Component {
                     <Redirect from="/" to="/login" exact/>
                     <Route path="/login" component={LoginPage}/>
                     <Route path="/admin">
-                        <Layout>
-                            <Switch>
-                                <Redirect from="/admin" to="/admin/dashboard" exact/>
-                                <Route path="/admin/dashboard" component={DashboardPage}/>
-                            </Switch>
-                        </Layout>
+                        <RouteGuard guards={[isLogin]} onRejected={() => <Redirect to="/login" push={false}/>}>
+                            <Layout>
+                                <Switch>
+                                    <Redirect from="/admin" to="/admin/dashboard" exact/>
+                                    <Route path="/admin/dashboard" component={DashboardPage}/>
+                                </Switch>
+                            </Layout>
+                        </RouteGuard>
+
                     </Route>
                 </Switch>
             </Router>

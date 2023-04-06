@@ -6,7 +6,7 @@ import {User} from "user";
 import {Status} from "response";
 
 
-interface UserState {
+export interface UserState {
     credentials: Partial<Credentials>,
     // 用户信息
     user: {
@@ -38,32 +38,34 @@ export default function userReducer(state = initialState, action: UserActions.Ac
         case UserTypes.REQUEST_USER_INFO:
             return {
                 ...state,
-                user:{
-                    result:{},
-                    status:'loading',
-                    error:null
+                user: {
+                    result: {},
+                    status: 'loading',
+                    error: null
                 }
             }
         case UserTypes.REQUEST_USER_INFO_SUCCESS:
             return {
                 ...state,
-                user:{
-                    result:action.payload.user,
-                    status:'success',
-                    error:null
+                user: {
+                    result: action.payload.user,
+                    status: 'success',
+                    error: null
                 }
             }
 
         case UserTypes.REQUEST_USER_INFO_ERROR:
             return {
                 ...state,
-                user:{
-                    result:{},
-                    status:'error',
-                    error:action.error
+                user: {
+                    result: {},
+                    status: 'error',
+                    error: action.error
                 }
 
             }
+        case UserTypes.CLEAR_USER:
+            return initialState
         default:
             return state;
     }

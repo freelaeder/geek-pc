@@ -41,4 +41,7 @@ export namespace UserCreators {
         }
 
     }
+
+    // 清空用户信息
+    export const clearUserInfo = (): UserActions.ClearUser => ({type: UserTypes.CLEAR_USER})
 }

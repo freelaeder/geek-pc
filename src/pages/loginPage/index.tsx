@@ -54,9 +54,9 @@ class LoginPage extends React.Component<Props, Status> {
         super(props)
         this.state = {
             form: {
-                mobile: '',
-                code: '',
-                agree: false
+                mobile: '13911111111',
+                code: '246810',
+                agree: true
             },
             // 记录表单验证错误
             formError: {
@@ -162,6 +162,15 @@ class LoginPage extends React.Component<Props, Status> {
         return this.onFieldValidate("agree", event.currentTarget.checked);
     }
 
+    //抽离错误信息渲染
+    // field: keyof FormErrors  === field = 'code' | 'mobile' | 'agree'
+    renderErrorsInfo = (field: keyof FormErrors) => {
+        return (
+            this.state.formError[field] &&
+            <p className="help is-danger">{this.state.formError[field]?.[0]}</p>
+        )
+    }
+
 
     render() {
         // 双重解构
@@ -174,9 +183,12 @@ class LoginPage extends React.Component<Props, Status> {
                         <input name={'mobile'} onInput={this.validateMobile} onBlur={this.validateMobile} value={mobile}
                                onChange={this.updateFormData} className="input"
                                type="text" placeholder="请输入手机号"/>
+                        {/*{*/}
+                        {/*    this.state.formError.mobile &&*/}
+                        {/*    <p className="help is-danger">{this.state.formError.mobile}</p>*/}
+                        {/*}*/}
                         {
-                            this.state.formError.mobile &&
-                            <p className="help is-danger">{this.state.formError.mobile}</p>
+                            this.renderErrorsInfo('mobile')
                         }
 
                     </div>
@@ -185,8 +197,7 @@ class LoginPage extends React.Component<Props, Status> {
                                onChange={this.updateFormData} className="input" type="text"
                                placeholder="请输入验证码"/>
                         {
-                            this.state.formError.code &&
-                            <p className="help is-danger">{this.state.formError.code}</p>
+                            this.renderErrorsInfo('code')
                         }
                     </div>
                     <div className="field">
@@ -198,8 +209,7 @@ class LoginPage extends React.Component<Props, Status> {
                 </span>
                         </label>
                         {
-                            this.state.formError.agree &&
-                            <p className="help is-danger">{this.state.formError.agree}</p>
+                            this.renderErrorsInfo('agree')
                         }
                     </div>
                     <div className="field">

@@ -27,7 +27,10 @@ export namespace UserActions {
         type: UserTypes.REQUEST_USER_INFO_ERROR;
         error: string | null;
     }
+    export interface ClearUser {
+        type:UserTypes.CLEAR_USER
+    }
 
     // User Actions
-    export type Actions = SaveCredentials | RequestUserInfo | RequestUserInfoError | RequestUserInfoSuccess;
+    export type Actions = SaveCredentials | RequestUserInfo | RequestUserInfoError | RequestUserInfoSuccess | ClearUser;
 }
