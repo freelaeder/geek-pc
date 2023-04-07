@@ -8,6 +8,14 @@ declare module "response" {
         data: T;
     }
 
+    // 分页响应类型
+    export interface Pagination<T> {
+        page: number;
+        per_page: number;
+        total_count: number;
+        results: T[];
+    }
+
     // 请求状态
     export type Status = "idle" | "loading" | "success" | "error";
 }
