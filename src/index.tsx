@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import "bulma/css/bulma.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './assets/css/base.css'
+import "react-datepicker/dist/react-datepicker.css";
 
 // http://toutiao.itheima.net/api-pc.html
 // pc http://geek-pc.itheima.net/login

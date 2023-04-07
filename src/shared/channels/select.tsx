@@ -34,7 +34,7 @@ class SelectChannels extends Component<Props> {
         return (
             <div className="select">
                 <select value={this.props.values} onChange={(event) => this.props.onChange(event.target.value)}>
-                    <option disabled={true}>请选择文章频道</option>
+                    <option>请选择文章频道</option>
                     {
                         result && result.map(item => (
                             <option key={item.id} value={item.id}>{item.name}</option>

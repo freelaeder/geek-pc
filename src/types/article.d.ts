@@ -3,7 +3,7 @@ declare module "article" {
     // 获取文章列表-请求参数
     export interface articlesRequestParams {
         // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，不传为全部
-        status?: 0 | 1 | 2 | 3;
+        status?: ArticlesStatus;
         // 频道ID
         channel_id?: string;
         // 起始时间
@@ -14,8 +14,6 @@ declare module "article" {
         page?: number;
         // 每页数量
         per_page?: number;
-        // 文章内容
-        content: string;
         // 文章频道id
         channel_id: string;
     }
