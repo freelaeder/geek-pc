@@ -11,9 +11,28 @@ import classNames from "classnames";
 import {Status} from "response";
 import {toast} from "react-toastify";
 import {history} from "@src/AppRouter";
+import {ArticleStatus} from "@reducers/articleReducer";
+import {connect, MapDispatchToPropsParam, MapStateToProps} from "react-redux";
+import {AppState, AppThunkDispatch} from "@src/store";
+import {ArticleActions} from "@actions/articleActions";
+import {ArticleCreators} from "@store/creators/ArticleCreators";
 
 
-type Props = RouteComponentProps<{ id: string }>;
+interface StateProps {
+// 获取文章状态对象
+    articleReducer: ArticleStatus;
+}
+
+interface OwnProps {
+
+}
+
+interface DispatchProps {
+// 获取文章详情
+    requestArticle: (id: string) => Promise<ArticleActions.Actions>;
+}
+
+type Props = StateProps & OwnProps & DispatchProps & RouteComponentProps<{ id: string }>;
 
 interface States {
     // 表单状态
@@ -33,7 +52,7 @@ interface States {
     publishRequestError: string | null;
 }
 
-export default class PublishPage extends React.Component<Props, States> {
+class PublishPage extends React.Component<Props, States> {
     constructor(props: Readonly<Props>) {
         super(props);
         this.state = {
@@ -66,16 +85,18 @@ export default class PublishPage extends React.Component<Props, States> {
         if (typeof id !== 'undefined') {
             console.log('编辑')
             try {
-                const res = await articleRequest(id)
+                // const res = await articleRequest(id)
+                 await this.props.requestArticle(id)
+                const res = this.props.articleReducer.article.result
                 this.setState({
                     formState: {
-                        title: res.data.title,
-                        content: res.data.content,
+                        title: res.title!,
+                        content: res.content!,
                         cover: {
-                            type: res.data.cover.type,
-                            images: res.data.cover.images
+                            type: res.cover?.type!,
+                            images: res.cover?.images!
                         },
-                        channel_id: res.data.channel_id
+                        channel_id: res.channel_id
                     }
                 })
             } catch (e) {
@@ -121,7 +142,7 @@ export default class PublishPage extends React.Component<Props, States> {
                     formState: {
                         ...this.state.formState,
                         cover: {
-                            type: this.state.formState.cover.type + 1 as 0 | 1 | 2 | 3,
+                            type: this.state.formState.cover.type + 1 as 0 | 1 | 3,
                             images: [...this.state.formState.cover.images, res.data.url]
                         }
                     }
@@ -187,7 +208,7 @@ export default class PublishPage extends React.Component<Props, States> {
                     publishRequestStatus: 'error',
                     publishRequestError: e.response?.data.error
                 })
-                return toast.error(`${id ?'编辑' : '发布' }失败: ${e.response?.data.message}`);
+                return toast.error(`${id ? '编辑' : '发布'}失败: ${e.response?.data.message}`);
             }
             throw  e
         }
@@ -319,3 +340,17 @@ export default class PublishPage extends React.Component<Props, States> {
         );
     }
 }
+
+
+const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = (state) => ({
+    // 获取文章状态
+    articleReducer: state.articleReducer
+
+})
+
+const mapDispatchToProps: MapDispatchToPropsParam<DispatchProps, OwnProps> = (dispatch: AppThunkDispatch) => ({
+    requestArticle: (id: string) => dispatch(ArticleCreators.requestArticle(id))
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PublishPage)

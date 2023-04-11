@@ -1,5 +1,5 @@
 import {Pagination, Status} from "response";
-import {Article} from "article";
+import {Article, PublishArticleParams} from "article";
 import {ArticleActions} from "@actions/articleActions";
 import {ArticleTypes} from "@store/types/articleTypes";
 
@@ -11,6 +11,11 @@ export interface ArticleStatus {
         error: string | null
 
     }
+    article: {
+        result: Partial<PublishArticleParams>;
+        status: Status;
+        error: string | null;
+    };
 }
 
 const initialState: ArticleStatus = {
@@ -18,8 +23,14 @@ const initialState: ArticleStatus = {
         status: 'idle',
         result: {},
         error: null
-
+    },
+    //单个文章
+    article: {
+        result: {},
+        status: 'idle',
+        error: null
     }
+
 }
 
 export function articleReducer(state = initialState, actions: ArticleActions.Actions): ArticleStatus {
@@ -52,7 +63,35 @@ export function articleReducer(state = initialState, actions: ArticleActions.Act
                     error: actions.error
                 }
             }
+        case ArticleTypes.REQUEST_ARTICLE:
+            return {
+                ...state,
+                article: {
+                    status: 'loading',
+                    error: null,
+                    result: {}
 
+                }
+            }
+        case ArticleTypes.REQUEST_ARTICLE_SUCCESS:
+            return {
+                ...state,
+                article: {
+                    status: 'success',
+                    error: null,
+                    result: actions.payload.article
+
+                }
+            }
+        case ArticleTypes.REQUEST_ARTICLE_ERROR:
+            return {
+                ...state,
+                article: {
+                    status: 'error',
+                    error: actions.error,
+                    result: {}
+                }
+            }
         default:
             return state
     }

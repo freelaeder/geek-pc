@@ -1,6 +1,6 @@
 import {ArticleTypes} from "@store/types/articleTypes";
 import {Pagination} from "response";
-import {Article} from "article";
+import {Article, PublishArticleParams} from "article";
 
 export namespace ArticleActions {
 
@@ -19,5 +19,25 @@ export namespace ArticleActions {
 
     }
 
-    export type Actions = RequestArticles | RequestArticlesError | RequestArticlesSuccess
+    export interface GetArticleDate {
+        type: ArticleTypes.REQUEST_ARTICLE
+    }
+
+    export interface GetArticleDateSuccess {
+        type: ArticleTypes.REQUEST_ARTICLE_SUCCESS,
+        payload: { article: PublishArticleParams }
+    }
+
+    export interface GetArticleDateError {
+        type: ArticleTypes.REQUEST_ARTICLE_ERROR,
+        error: string | null
+    }
+
+    export type Actions =
+        RequestArticles
+        | RequestArticlesError
+        | RequestArticlesSuccess
+        | GetArticleDate
+        | GetArticleDateError
+        | GetArticleDateSuccess
 }
