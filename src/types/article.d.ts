@@ -43,8 +43,11 @@ declare module "article" {
     // 文章封面类型
     export interface Cover {
         //  封面类型: 0: 无封面 1: 1张封面图片 3: 3张封面
-        type: 0 | 1 | 3;
+        type: 0 | 1 | 2 | 3;
         // 封面列表
         images: string[];
     }
+
+    // 发布文章时请求参数的类型
+    export type PublishArticleParams = Pick<Article, "title" | "cover"> & { 'content': string, "channel_id"?: string };
 }

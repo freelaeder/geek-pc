@@ -10,7 +10,7 @@ type Props = {
 export default class Item extends React.Component<Props> {
     render() {
         const {
-            id, title, status, comment_count, pubdate,
+             title, status, comment_count, pubdate,
             cover, like_count, read_count
         } = this.props.article
         return (

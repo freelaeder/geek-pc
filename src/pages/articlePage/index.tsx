@@ -78,9 +78,21 @@ class ArticlePage extends React.Component<Props, Status> {
         this.props.requestArticles(this.state.reqParams)
     }
 
+    // 组件更新后执行
+    async componentDidUpdate(prevProps: Readonly<Props>,prevState: Readonly<Status>,) {
+        // 监听 page和 per_page 是否发生变化
+        if (
+            prevState.reqParams.page !== this.state.reqParams.page ||
+            prevState.reqParams.per_page !== this.state.reqParams.per_page
+        ) {
+            // 请求文章列表
+            await this.props.requestArticles(this.state.reqParams);
+        }
+    }
 
     render() {
-        const {results} = this.props.articlesReducer.articles.result
+        const {results,total_count} = this.props.articlesReducer.articles.result
+        const {page ,per_page} = this.state.reqParams
         return (
             <>
                 <div className="has-background-white mb-5">
@@ -91,7 +103,11 @@ class ArticlePage extends React.Component<Props, Status> {
                 <div className="has-background-white">
                     <List articlesReducer={this.props.articlesReducer}/>
                     {
-                        results?.length !== 0 ? <Pagination/> : null
+                        results?.length !== 0 ? <Pagination page={page || 1} updateReqParams={this.updateReqParams}
+                                                            total_count={total_count || 0 }
+                                                            maxPageNum={5}
+                                                            per_page={ per_page || 10}
+                        /> : null
                     }
 
                 </div>

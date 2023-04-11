@@ -2,13 +2,7 @@
 import React from "react";
 import styles from "./index.module.css";
 import Item from "@pages/articlePage/articles/item";
-import {connect, MapDispatchToPropsParam, MapStateToProps} from "react-redux";
 import {ArticleStatus} from "@reducers/articleReducer";
-import {AppState, AppThunkDispatch} from "@src/store";
-import {articlesRequestParams} from "article";
-import {ArticleActions} from "@actions/articleActions";
-import {ArticleCreators} from "@store/creators/ArticleCreators";
-
 
 // 定义props 就是外部传递的props
 interface OwnProps {
