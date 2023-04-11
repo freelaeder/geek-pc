@@ -3,15 +3,73 @@ import React from "react";
 import styles from "./index.module.css";
 import Item from "@pages/articlePage/articles/item";
 import {ArticleStatus} from "@reducers/articleReducer";
+import {Status} from "response";
+import Confirm from "@shared/confirm";
+import {articleRemoveRequest} from "@requests/articles";
+import {AxiosError} from "axios";
 
 // 定义props 就是外部传递的props
 interface OwnProps {
     articlesReducer: ArticleStatus
+    // 获取列表
+    getArticleByReq:() =>void
 }
 
 type Props = OwnProps
 
-export default class List extends React.Component<Props> {
+interface States {
+    isOpen: boolean;
+    id: string | null;
+    removeRequestStatus: Status;
+    removeRequestError: string | null;
+}
+
+export default class List extends React.Component<Props, States> {
+
+
+    state: States = {
+        isOpen: false,
+        id: '',
+        removeRequestError: '',
+        removeRequestStatus: 'idle'
+    }
+
+    removeArticle = async () => {
+        const {id, removeRequestStatus} = this.state
+        if (!id) return
+        if (removeRequestStatus === 'loading') return
+        this.setState({
+            removeRequestStatus: 'loading',
+            removeRequestError: ''
+        })
+
+        try {
+            const res = await articleRemoveRequest(id)
+            this.setState({
+                removeRequestStatus: 'success',
+                removeRequestError: ''
+            })
+            this.props.getArticleByReq()
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                // 更新请求状态
+                this.setState({
+                    removeRequestStatus: "error",
+                    removeRequestError: error.response?.data.message,
+                });
+            }
+            throw error;
+        }
+
+
+    }
+    // 渲染删除确认框并接收要删除的文章的 id
+    open = (id: string) => {
+        this.setState({
+            isOpen: true,
+            id,
+        });
+    }
 
     render() {
         const {results, total_count} = this.props.articlesReducer.articles.result
@@ -36,7 +94,8 @@ export default class List extends React.Component<Props> {
                         </thead>
                         <tbody>
                         {
-                            results?.length !== 0 ? results?.map(item => <Item key={item.id} article={item}/>) :
+                            results?.length !== 0 ? results?.map(item => <Item key={item.id} open={this.open}
+                                                                               article={item}/>) :
                                 <tr className={'ant-table-placeholder'}>
 
                                     <td colSpan={8} className="ant-table-cell">
@@ -72,6 +131,13 @@ export default class List extends React.Component<Props> {
 
                         </tbody>
                     </table>
+                    <Confirm
+                        isOpen={this.state.isOpen}
+                        close={() => this.setState({isOpen: false})}
+                        onSureButtonClicked={this.removeArticle}
+                    >
+                        您确定要删除该文章吗?
+                    </Confirm>
                 </div>
             </div>
         );

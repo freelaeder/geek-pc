@@ -101,7 +101,7 @@ class ArticlePage extends React.Component<Props, Status> {
                                 reqParams={this.state.reqParams}/>
                 </div>
                 <div className="has-background-white">
-                    <List articlesReducer={this.props.articlesReducer}/>
+                    <List  getArticleByReq={this.getArticleByReq} articlesReducer={this.props.articlesReducer}/>
                     {
                         results?.length !== 0 ? <Pagination page={page || 1} updateReqParams={this.updateReqParams}
                                                             total_count={total_count || 0 }

@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 
 type Props = {
     article: Article;
+    open: (id: string) => void
 };
 
 export default class Item extends React.Component<Props> {
@@ -52,7 +53,7 @@ export default class Item extends React.Component<Props> {
                         </Link>
                     </button>
 
-                    <button className="button is-danger is-rounded is-small">
+                    <button onClick={() => this.props.open(id)} className="button is-danger is-rounded is-small">
                         <i className="fas fa-trash-alt"></i>
                     </button>
                 </td>
