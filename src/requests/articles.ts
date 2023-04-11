@@ -61,3 +61,25 @@ export function uploadRequest(
         onUploadProgress,
     });
 }
+
+// 获取文章详情
+export function articleRequest(id: string) {
+    return RequestManager.instance.request<GeekResponse<PublishArticleParams>>({
+        url: `/mp/articles/${id}`,
+    });
+}
+
+// src/requests/article.ts
+// 编辑文章
+export function updateArticleRequest(
+    id: string,
+    article: PublishArticleParams,
+    draft: boolean
+) {
+    return RequestManager.instance.request<GeekResponse<{ id: string }>>({
+        url: `/mp/articles/${id}`,
+        method: "put",
+        params: { draft },
+        data: article,
+    });
+}

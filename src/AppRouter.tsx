@@ -27,7 +27,8 @@ export default class AppRouter extends React.Component {
                                     <Redirect from="/admin" to="/admin/dashboard" exact/>
                                     <Route path="/admin/dashboard" component={DashboardPage}/>
                                     <Route path="/admin/article" component={ArticlePage}/>
-                                    <Route path="/admin/publish" component={PublishPage} />
+                                    <Route exact path="/admin/publish" component={PublishPage} />
+                                    <Route path="/admin/publish/:id" component={PublishPage} />
                                 </Switch>
                             </Layout>
                         </RouteGuard>

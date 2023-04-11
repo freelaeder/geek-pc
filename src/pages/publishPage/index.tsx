@@ -1,10 +1,10 @@
 // src/pages/publishPage/index.tsx
 import React, {ChangeEvent} from "react";
-import {Link} from "react-router-dom";
+import {Link, RouteComponentProps} from "react-router-dom";
 import ReactQuill from "react-quill";
 import styles from "./index.module.css";
 import SelectChannels from "@shared/channels/select";
-import {publishArticleRequest, uploadRequest} from "@requests/articles";
+import {articleRequest, publishArticleRequest, updateArticleRequest, uploadRequest} from "@requests/articles";
 import {PublishArticleParams} from "article";
 import {AxiosError, AxiosProgressEvent} from "axios";
 import classNames from "classnames";
@@ -12,8 +12,8 @@ import {Status} from "response";
 import {toast} from "react-toastify";
 import {history} from "@src/AppRouter";
 
-interface Props {
-}
+
+type Props = RouteComponentProps<{ id: string }>;
 
 interface States {
     // 表单状态
@@ -58,6 +58,35 @@ export default class PublishPage extends React.Component<Props, States> {
             publishRequestError: null,
         }
     }
+
+    async componentDidMount() {
+
+        const id = this.props.match.params.id
+        // 若能获取id ，则代表是编辑文章
+        if (typeof id !== 'undefined') {
+            console.log('编辑')
+            try {
+                const res = await articleRequest(id)
+                this.setState({
+                    formState: {
+                        title: res.data.title,
+                        content: res.data.content,
+                        cover: {
+                            type: res.data.cover.type,
+                            images: res.data.cover.images
+                        },
+                        channel_id: res.data.channel_id
+                    }
+                })
+            } catch (e) {
+                if (e instanceof AxiosError) {
+                    toast.error(`获取信息失败: ${e.response?.data.message}`);
+                    history.push('/admin/publish')
+                }
+            }
+        }
+    }
+
 
     // 更新表单状态
     updateFormDate = (name: keyof PublishArticleParams, value: PublishArticleParams[keyof PublishArticleParams]) => {
@@ -135,6 +164,7 @@ export default class PublishPage extends React.Component<Props, States> {
     }
     onSubmitDate = async (event: ChangeEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const id = this.props.match.params.id
         const {draft, publishRequestStatus, formState} = this.state
         if (publishRequestStatus === 'loading') return
         this.setState({
@@ -142,13 +172,13 @@ export default class PublishPage extends React.Component<Props, States> {
             publishRequestError: null
         })
         try {
-            const res = await publishArticleRequest(draft, formState)
+            const res = await (id ? updateArticleRequest(id, formState, draft) : publishArticleRequest(draft, formState))
             this.setState({
                 publishRequestStatus: 'success',
                 publishRequestError: null
             })
             // 消息提示
-            toast.success("发布成功");
+            toast.success(`${id ? '编辑' : '发布'}成功`);
             // 跳转到内容管理页面
             history.push("/admin/article");
         } catch (e) {
@@ -157,7 +187,7 @@ export default class PublishPage extends React.Component<Props, States> {
                     publishRequestStatus: 'error',
                     publishRequestError: e.response?.data.error
                 })
-                return toast.success(`发布失败: ${e.response?.data.message}`);
+                return toast.error(`${id ?'编辑' : '发布' }失败: ${e.response?.data.message}`);
             }
             throw  e
         }

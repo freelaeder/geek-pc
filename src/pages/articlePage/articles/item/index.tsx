@@ -1,6 +1,7 @@
 // src/pages/articlePage/articles/item/index.tsx
 import React from "react";
 import {Article} from "article";
+import {Link} from "react-router-dom";
 
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
 export default class Item extends React.Component<Props> {
     render() {
         const {
-             title, status, comment_count, pubdate,
+            id, title, status, comment_count, pubdate,
             cover, like_count, read_count
         } = this.props.article
         return (
@@ -46,8 +47,11 @@ export default class Item extends React.Component<Props> {
                 <td>{like_count}</td>
                 <td>
                     <button className="button is-success is-rounded is-small mr-2">
-                        <i className="fas fa-edit"></i>
+                        <Link to={{pathname: `/admin/publish/${id}`, state: {id: id}}}>
+                            <i className="fas fa-edit"></i>
+                        </Link>
                     </button>
+
                     <button className="button is-danger is-rounded is-small">
                         <i className="fas fa-trash-alt"></i>
                     </button>
